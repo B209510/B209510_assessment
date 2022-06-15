@@ -7,7 +7,24 @@
 
 #Here is an example of using R as a calculator to perform a numerical operation. 
 
-(3 + 7)^2 - 1*10/4
+(3 + 8)^2 - 1*10/4
+
+#git config --global user.email "s2216482@ed.ac.uk"
+#git config --global user.name "B209510"
+#pwd
+
+#if you need to change directory
+#cd 
+#git status
+#git pull
+#git add .
+
+##HJJHJH 
+#Something new
+#git commit -m "Update Using R in Noteable update 3"
+#git push -u origin master
+
+
 
 
 # Using the c() and cbind() base R functions to combine data values and objects respectively. 
