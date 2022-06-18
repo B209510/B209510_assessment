@@ -8,6 +8,8 @@ output:
 
 \newpage
 
+# Link to git hub repository
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
