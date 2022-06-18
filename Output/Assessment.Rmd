@@ -2,12 +2,13 @@
 title: "R Source Code for assessment"
 author: "B209510"
 output:
+  pdf_document: default
   html_notebook: default
 ---
 
 \newpage
 
-# [Link to git hub repository](https://github.com/B209510/B209510_assessment)
+# [*Link to git hub repository*](https://github.com/B209510/B209510_assessment)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -16,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Loading NHSR Dataset
 
 ## Loading required libraries and data
-```{r preamble, message=FALSE,warning=FALSE}
+```{r preamble, message=FALSE,warning=FALSE,results='hide'}
 # Loading required libraries
 library(tidyverse)
 library(NHSRdatasets)
@@ -30,7 +31,7 @@ library(dataMeta)
 
 The dataset selected is LOS_model from the NHSRdatasets package and it contains an artificially created patient dataset with age, length of hospital stay and death status for 300 patients across 10 hospitals.
 
-```{r Loading dataset}
+```{r Loading dataset,results='hide'}
 
 #Load the LOS_model data.
 data(LOS_model)
@@ -42,7 +43,7 @@ LOS_data <- LOS_model
 
 An initial observation of the dataset will be carried out to evaluate its characteristic and to observe if there is any missing data.
 
-```{r Data inspection}
+```{r Data inspection, results='hide'}
 # Initial exploration of dataset
 
 class(LOS_data)
@@ -68,7 +69,7 @@ summary(LOS_data)
 
 An index will be created to allow identification of the observations that will be used for analyse. A transformation to a factor of categorical data will take place and the dataset will be saved into raw data folder.
 
-```{r Data preparation}
+```{r Data preparation, results='hide'}
 # Adding index
 LOS_data <- rowid_to_column(LOS_data,"index")
 
@@ -96,7 +97,7 @@ levels(LOS_data$Outcome)
 
 The desired variables will be kept in the subseted dataset for posterior analysis. The subseted dataframe will be stored into raw data.
 
-```{r Data selection}
+```{r Data selection,results='hide'}
 
 # Subsetting dataframe with the variables of interest
 
@@ -114,7 +115,7 @@ write_csv(subset_LOS, here("Rawdata", "subsetLOS.csv"))
 
 A train and test data partition will be performed to allow validation of models created from the input data. The data will be respectively saved into data folder as test and train data and also one observation is going to be saved for assessment marking purposes.
 
-```{r Dividing dataset into training and testing sets}
+```{r Dividing dataset into training and testing sets,results='hide'}
 
 subset_LOS
 nrow(subset_LOS)
@@ -162,7 +163,7 @@ Three variables were selected : Age and LOS are integer numerical variables and 
 
 The collected data will be assigned to an object called collected_data and a brief inspection and visualization of this will take place to ensure it was no erroneous data.
 
-```{r Data dictionary}
+```{r Data dictionary,results='hide'}
 
 # Importing collected data
 collected_data <- read_csv(here("Rawdata","CollectedDataLOSFinal.csv"))
@@ -178,7 +179,7 @@ glimpse(collected_data)
 
 A variable description list with the detailed description of the selected variables will be allocated to an object that will be feed into the build_linker function to create a path to add this information to the dataset using the build_dict function. The data dictionary will be saved into raw data
 
-```{r}
+```{r, results='hide'}
 variable_description <- c("Index column allows identification of the observation regarding the original LOS dataset in the raw folder.",
                           "The number of days spend in Hospital", "Age of the individual in years", "Outcome of the hospitalization",
                           "Consent from the end-user to process and share the data collected with the data capture tool")
@@ -187,7 +188,7 @@ variable_type <- c(0,0,0,1,1)
 linker <- build_linker(collected_data,variable_description,variable_type)
 print(linker)
 
-# data_dictionary <- build_dict(my.data = collected_data,linker = linker)
+data_dictionary <- build_dict(my.data = collected_data,linker = linker)
 
 glimpse(data_dictionary)
 
@@ -198,7 +199,7 @@ write_csv(data_dictionary,here("Rawdata","Collected_dataLOS_datadictionary.csv")
 
 The data dictionary created will be added to the working dataset using the incorporate_attr function and an author name will be incorporated in the attributes of the dataset. The data will be saved into Rawdata folder.
 
-```{r}
+```{r, results='hide'}
 # Appending data dictionary to collected data
 
 main_string <- "This data is artificially created and fabricates a patient dataset with age, lenght of stay and death status for 300 patients across 10 hospitals"
