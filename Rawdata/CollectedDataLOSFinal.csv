@@ -1,0 +1,12 @@
+Index,Lenght of stay,Age,Outcome,Consent
+56,1,11,Discharge,True
+72,6,79,Discharge,True
+76,7,66,Discharge,True
+85,12,90,Discharge,True
+147,3,38,Discharge,True
+162,2,17,Discharge,True
+202,6,69,Discharge,True
+204,2,27,Discharge,True
+252,4,90,Death,True
+275,6,44,Discharge,True
+298,3,21,Discharge,True
