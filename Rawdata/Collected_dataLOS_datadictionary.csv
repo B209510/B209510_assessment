@@ -1,0 +1,7 @@
+variable name,variable description,variable options,notes
+Age,Age of the individual,11 to 90,Age of individual in years.
+Consent,Consent from the end-user to process and share the data collected with the data capture tool,TRUE,Individual has given consent for the data to be collected and processed.
+Index,Index column allows identification of the observation regarding the original LOS dataset in the raw folder.,56 to 298,Primary identification of an observation.
+Lenght of stay,The number of days spend in Hospital,1 to 12,Lenght of hospital stay in days.
+Outcome,Outcome of the hospitalization,Discharge,Individual was discharged alive
+ , ,Death,Fatality

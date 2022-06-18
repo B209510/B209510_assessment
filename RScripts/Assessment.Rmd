@@ -1,20 +1,21 @@
 ---
-title: "R Source Code"
+title: "R Source Code for assessment"
 author: "B209510"
 output:
-  pdf_document: default
   html_notebook: default
 ---
 
 \newpage
 
-# Link to git hub repository : https://github.com/B209510/B209510_assessment
+# [Link to git hub repository](https://github.com/B209510/B209510_assessment)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# 
+# Loading NHSR Dataset
+
+## Loading required libraries and data
 ```{r preamble, message=FALSE,warning=FALSE}
 # Loading required libraries
 library(tidyverse)
@@ -27,14 +28,19 @@ library(dataMeta)
 
 ```
 
+The dataset selected is LOS_model from the NHSRdatasets package and it contains an artificially created patient dataset with age, length of hospital stay and death status for 300 patients across 10 hospitals.
+
 ```{r Loading dataset}
+
 #Load the LOS_model data.
 data(LOS_model)
 
 LOS_data <- LOS_model
 ```
 
+## Data inspection
 
+An initial observation of the dataset will be carried out to evaluate its characteristic and to observe if there is any missing data.
 
 ```{r Data inspection}
 # Initial exploration of dataset
@@ -47,6 +53,7 @@ glimpse(LOS_data)
 
 head(LOS_data)
 tail(LOS_data,10)
+nrow(LOS_data)
 
 LOS_data %>% 
   map(is.na) %>% 
@@ -54,17 +61,19 @@ LOS_data %>%
 
 summary(LOS_data)
 
-vignette("LOS_model")
+# vignette("LOS_model")
 ```
 
+## Data preparation
 
+An index will be created to allow identification of the observations that will be used for analyse. A transformation to a factor of categorical data will take place and the dataset will be saved into raw data folder.
 
 ```{r Data preparation}
 # Adding index
 LOS_data <- rowid_to_column(LOS_data,"index")
 
 # Saving raw data
-#write.csv(LOS_data,here("Rawdata","LOS_data.csv"))
+write.csv(LOS_data,here("Rawdata","LOS_data.csv"))
 
 # Data manipulation: Death variable will need to be converted to a factor
 
@@ -83,6 +92,9 @@ levels(LOS_data$Outcome)
 
 ```
 
+## Subsetting the data
+
+The desired variables will be kept in the subseted dataset for posterior analysis. The subseted dataframe will be stored into raw data.
 
 ```{r Data selection}
 
@@ -95,9 +107,12 @@ subset_LOS <- LOS_data %>%
 summary(subset_LOS)
 
 # Saving sunbset raw data
-#write_csv(subset_LOS, here("RawData", "subsetLOS.csv"))
+write_csv(subset_LOS, here("Rawdata", "subsetLOS.csv"))
 ```
 
+## Dividing the working dataset into training and testing sets
+
+A train and test data partition will be performed to allow validation of models created from the input data. The data will be respectively saved into data folder as test and train data and also one observation is going to be saved for assessment marking purposes.
 
 ```{r Dividing dataset into training and testing sets}
 
@@ -118,7 +133,7 @@ head(trainIndex)
 LOStrain <- subset_LOS[ trainIndex,]
 nrow(LOStrain)
 
-#write_csv(LOStrain, here("Data", "Los_subset_train.csv"))
+write_csv(LOStrain, here("Data", "Los_subset_train.csv"))
 
 LOStest  <- subset_LOS[-trainIndex,]
 nrow(LOStest)
@@ -127,13 +142,25 @@ LostestMarker <- LOStest[1,]
 
 LostestMarker
 
-#write_csv(LostestMarker, here("Data", "subset_Los_test_marker.csv"))
+write_csv(LostestMarker, here("Data", "subset_Los_test_marker.csv"))
 
 LosTest  <- LOStest[2:nrow(LOStest),]
 
-#write_csv(LosTest, here("Data", "LosTest.csv"))
+write_csv(LosTest, here("Data", "LosTest.csv"))
 ```
 
+# Data Capture tool
+
+## Performed in Python programming language and avaliable in the provided git hub repository
+
+Three variables were selected : Age and LOS are integer numerical variables and a widget intText was used for data capture and the variable Outcome is a character categorical variable and a radiobutton widget was used for data capture. A consent variable was added into the tool as a boolean variable with a checkbox widget and index is inputed manually as integer numerical variable as an user input query. 
+
+
+# Data Dictionary
+
+## Importing and inspecting collected data
+
+The collected data will be assigned to an object called collected_data and a brief inspection and visualization of this will take place to ensure it was no erroneous data.
 
 ```{r Data dictionary}
 
@@ -145,21 +172,33 @@ collected_data <- read_csv(here("Rawdata","CollectedDataLOSFinal.csv"))
 head(collected_data)
 glimpse(collected_data)
 
+```
+
+## Data description and linker
+
+A variable description list with the detailed description of the selected variables will be allocated to an object that will be feed into the build_linker function to create a path to add this information to the dataset using the build_dict function. The data dictionary will be saved into raw data
+
+```{r}
 variable_description <- c("Index column allows identification of the observation regarding the original LOS dataset in the raw folder.",
-                          "The number of days spend in Hospital", "Age of the individual", "Outcome of the hospitalization",
+                          "The number of days spend in Hospital", "Age of the individual in years", "Outcome of the hospitalization",
                           "Consent from the end-user to process and share the data collected with the data capture tool")
 variable_type <- c(0,0,0,1,1)
 
 linker <- build_linker(collected_data,variable_description,variable_type)
 print(linker)
 
-data_dictionary <- build_dict(my.data = collected_data,linker = linker)
+# data_dictionary <- build_dict(my.data = collected_data,linker = linker)
 
 glimpse(data_dictionary)
 
 write_csv(data_dictionary,here("Rawdata","Collected_dataLOS_datadictionary.csv"))
+```
 
+## Appending data dictionary to collected data
 
+The data dictionary created will be added to the working dataset using the incorporate_attr function and an author name will be incorporated in the attributes of the dataset. The data will be saved into Rawdata folder.
+
+```{r}
 # Appending data dictionary to collected data
 
 main_string <- "This data is artificially created and fabricates a patient dataset with age, lenght of stay and death status for 300 patients across 10 hospitals"
@@ -175,7 +214,6 @@ complete_collectedLOSdata
 attributes(complete_collectedLOSdata)
 
 save_it(complete_collectedLOSdata,here("Rawdata","CollectedDataLOSFinal"))
-
 
 ```
 
