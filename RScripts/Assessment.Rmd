@@ -1,0 +1,181 @@
+---
+title: "R Source Code"
+author: "B209510"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+\newpage
+
+# Link to git hub repository : https://github.com/B209510/B209510_assessment
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 
+```{r preamble, message=FALSE,warning=FALSE}
+# Loading required libraries
+library(tidyverse)
+library(NHSRdatasets)
+library(here)
+library(knitr)
+library(scales)
+library(caret)
+library(dataMeta)
+
+```
+
+```{r Loading dataset}
+#Load the LOS_model data.
+data(LOS_model)
+
+LOS_data <- LOS_model
+```
+
+
+
+```{r Data inspection}
+# Initial exploration of dataset
+
+class(LOS_data)
+
+LOS_data
+
+glimpse(LOS_data)
+
+head(LOS_data)
+tail(LOS_data,10)
+
+LOS_data %>% 
+  map(is.na) %>% 
+  map(sum)
+
+summary(LOS_data)
+
+vignette("LOS_model")
+```
+
+
+
+```{r Data preparation}
+# Adding index
+LOS_data <- rowid_to_column(LOS_data,"index")
+
+# Saving raw data
+#write.csv(LOS_data,here("Rawdata","LOS_data.csv"))
+
+# Data manipulation: Death variable will need to be converted to a factor
+
+LOS_data$Death <- as.factor(LOS_data$Death)
+class(LOS_data$Death)
+levels(LOS_data$Death)
+
+LOS_data <- LOS_data %>% 
+  mutate(Outcome=fct_collapse(Death,
+                              "Discharge"="0",
+                              "Death"="1"))
+
+LOS_data
+class(LOS_data$Outcome)
+levels(LOS_data$Outcome)
+
+```
+
+
+```{r Data selection}
+
+# Subsetting dataframe with the variables of interest
+
+subset_LOS <- LOS_data %>% 
+  select(index,LOS,Age,Outcome)
+
+# Summary statistics of subseted dataframe
+summary(subset_LOS)
+
+# Saving sunbset raw data
+#write_csv(subset_LOS, here("RawData", "subsetLOS.csv"))
+```
+
+
+```{r Dividing dataset into training and testing sets}
+
+subset_LOS
+nrow(subset_LOS)
+
+prop<-(1-(15/nrow(subset_LOS)))
+
+print(prop)
+
+set.seed(333)
+
+trainIndex <- createDataPartition(subset_LOS$index, p = prop, 
+                                  list = FALSE, 
+                                  times = 1)
+head(trainIndex)
+
+LOStrain <- subset_LOS[ trainIndex,]
+nrow(LOStrain)
+
+#write_csv(LOStrain, here("Data", "Los_subset_train.csv"))
+
+LOStest  <- subset_LOS[-trainIndex,]
+nrow(LOStest)
+
+LostestMarker <- LOStest[1,]
+
+LostestMarker
+
+#write_csv(LostestMarker, here("Data", "subset_Los_test_marker.csv"))
+
+LosTest  <- LOStest[2:nrow(LOStest),]
+
+#write_csv(LosTest, here("Data", "LosTest.csv"))
+```
+
+
+```{r Data dictionary}
+
+# Importing collected data
+collected_data <- read_csv(here("Rawdata","CollectedDataLOSFinal.csv"))
+
+# Inspecting collected data
+
+head(collected_data)
+glimpse(collected_data)
+
+variable_description <- c("Index column allows identification of the observation regarding the original LOS dataset in the raw folder.",
+                          "The number of days spend in Hospital", "Age of the individual", "Outcome of the hospitalization",
+                          "Consent from the end-user to process and share the data collected with the data capture tool")
+variable_type <- c(0,0,0,1,1)
+
+linker <- build_linker(collected_data,variable_description,variable_type)
+print(linker)
+
+data_dictionary <- build_dict(my.data = collected_data,linker = linker)
+
+glimpse(data_dictionary)
+
+write_csv(data_dictionary,here("Rawdata","Collected_dataLOS_datadictionary.csv"))
+
+
+# Appending data dictionary to collected data
+
+main_string <- "This data is artificially created and fabricates a patient dataset with age, lenght of stay and death status for 300 patients across 10 hospitals"
+
+main_string
+
+complete_collectedLOSdata <- incorporate_attr(my.data=collected_data,data.dictionary = data_dictionary,main_string = main_string)
+
+attributes(complete_collectedLOSdata)$author[1] <- "First Last Name"
+
+complete_collectedLOSdata
+
+attributes(complete_collectedLOSdata)
+
+save_it(complete_collectedLOSdata,here("Rawdata","CollectedDataLOSFinal"))
+
+
+```
+
