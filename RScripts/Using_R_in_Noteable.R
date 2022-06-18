@@ -7,7 +7,7 @@
 
 #Here is an example of using R as a calculator to perform a numerical operation. 
 
-(3 + 8)^2 - 1*10/44
+(3 + 8)^2 - 1*10/4444
 
 #git config --global user.email "s2216482@ed.ac.uk"
 #git config --global user.name "B209510"
