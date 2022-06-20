@@ -2,8 +2,9 @@
 title: "R Source Code for assessment"
 author: "B209510"
 output:
-  pdf_document: default
+  word_document: default
   html_notebook: default
+  pdf_document: default
 ---
 
 \newpage
@@ -29,7 +30,7 @@ library(dataMeta)
 
 ```
 
-The dataset selected is LOS_model from the NHSRdatasets package and it contains an artificially created patient dataset with age, length of hospital stay and death status for 300 patients across 10 hospitals.
+The selected dataset is LOS_model from the NHSRdatasets package and it contains an artificially created patient dataset with age, length of hospital stay and death status for 300 patients across 10 hospitals.
 
 ```{r Loading dataset,results='hide'}
 
@@ -67,7 +68,7 @@ summary(LOS_data)
 
 ## Data preparation
 
-An index will be created to allow identification of the observations that will be used for analyse. A transformation to a factor of categorical data will take place and the dataset will be saved into raw data folder.
+An index column will be created to allow identification of the observations that will be used for analyse. A transformation to a factor of categorical data will take place and the dataset will be saved into raw data folder.
 
 ```{r Data preparation, results='hide'}
 # Adding index
@@ -154,14 +155,14 @@ write_csv(LosTest, here("Data", "LosTest.csv"))
 
 ## Performed in Python programming language and avaliable in the provided git hub repository
 
-Three variables were selected : Age and LOS are integer numerical variables and a widget intText was used for data capture and the variable Outcome is a character categorical variable and a radiobutton widget was used for data capture. A consent variable was added into the tool as a boolean variable with a checkbox widget and index is inputed manually as integer numerical variable as an user input query. 
+Three variables were selected : Age and LOS are integer numerical variables and a widget IntText was used for data capture and the variable Outcome is a character categorical variable and a RadioButton widget was used for data capture. A consent variable was added into the tool as a boolean variable with a Checkbox widget and index is manually inputted as integer numerical variable using an user input query. 
 
 
 # Data Dictionary
 
 ## Importing and inspecting collected data
 
-The collected data will be assigned to an object called collected_data and a brief inspection and visualization of this will take place to ensure it was no erroneous data.
+The collected data will be assigned to an object called collected_data and a brief inspection and visualization of this data frame will take place to ensure it has no erroneous data.
 
 ```{r Data dictionary,results='hide'}
 
